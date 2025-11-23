@@ -92,3 +92,7 @@ Combina IA + Regex para definir o nível final de risco
 🛡️ Finalidade do Projeto
 
 O SafeScan Kids busca auxiliar pequenas empresas — como a AbracadabraKids — a garantir práticas de segurança e privacidade no trato de informações, oferecendo uma solução acessível, educacional e alinhada à LGPD.
+
+RA: 24000758 NOME: Thauan Thales Paulista
+RA: 24000679 NOME: Gustavo Costa Jorge
+RA: 24000544 NOME: Jhones Medeiros Martins
