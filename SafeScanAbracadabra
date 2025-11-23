@@ -1,0 +1,181 @@
+# ========================================
+# SafeScan Kids – AbracadabraKids
+# Inteligência Artificial + LGPD
+# Desenvolvido em Python
+# ========================================
+
+import re
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.neural_network import MLPClassifier
+import numpy as np
+import os
+
+# ========================================
+# 1. REGRAS DE DETECÇÃO POR PADRÕES (REGEX)
+# ========================================
+
+regex_patterns = {
+    "CPF": r"\b\d{3}\.\d{3}\.\d{3}\-\d{2}\b",
+    "E-mail": r"[A-Za-z0-9\._]+@[A-Za-z0-9]+\.[A-Za-z]+",
+    "Telefone": r"\b(?:\(?\d{2}\)?\s?)?\d{4,5}\-?\d{4}\b",
+    "Data de nascimento": r"\b\d{2}\/\d{2}\/\d{4}\b",
+    "Endereço": r"(Rua|Avenida|Travessa|Estrada)\s+[A-Za-z ]+\,?\s*\d*",
+    "Alergias": r"(alergia|alérgico|restrição alimentar|intolerância)",
+}
+
+# ========================================
+# 2. DATASET SIMPLES PARA TREINAR A IA
+# Classe 0 = comum
+# Classe 1 = dado pessoal
+# Classe 2 = dado sensível infantil
+# ========================================
+
+texts = [
+    "Meu CPF é 123.456.789-10",
+    "Contato: email teste@gmail.com",
+    "Telefone do responsável: 11987654321",
+    "A criança possui alergia a lactose",
+    "Restrição alimentar: amendoim",
+    "João possui asma",
+    "Lista de fornecedores atualizada",
+    "Evento infantil realizado com sucesso",
+    "Brinquedos disponíveis na brinquedoteca",
+]
+
+labels = [1, 1, 1, 2, 2, 2, 0, 0, 0]
+
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(texts)
+
+model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=800)
+model.fit(X, labels)
+
+# ========================================
+# 3. FUNÇÃO DE CLASSIFICAÇÃO POR IA
+# ========================================
+
+def ia_classificar_texto(texto):
+    X_input = vectorizer.transform([texto])
+    pred = model.predict(X_input)[0]
+    return pred  # retorna 0, 1 ou 2
+
+# ========================================
+# 4. FUNÇÃO PARA DETECTAR DADOS VIA REGEX
+# ========================================
+
+def detectar_regex(texto):
+    resultados = {}
+
+    for tipo, pattern in regex_patterns.items():
+        encontrados = re.findall(pattern, texto, flags=re.IGNORECASE)
+        if encontrados:
+            resultados[tipo] = encontrados
+
+    return resultados
+
+# ========================================
+# 5. SISTEMA DE CLASSIFICAÇÃO DE RISCO
+# ========================================
+
+def definir_risco(dados_detectados, ia_classe):
+    risco = "Baixo"
+
+    if ia_classe == 1:
+        risco = "Médio"
+    elif ia_classe == 2:
+        risco = "Alto"
+
+    # reforço caso regex pegue dados sensíveis
+    if "Alergias" in dados_detectados:
+        risco = "Alto"
+
+    return risco
+
+# ========================================
+# 6. ANÁLISE COMPLETA DE ARQUIVO
+# ========================================
+
+def analisar_arquivo(caminho_arquivo):
+    if not os.path.exists(caminho_arquivo):
+        return "Arquivo não encontrado."
+
+    # leitura genérica
+    try:
+        texto = open(caminho_arquivo, "r", encoding="utf-8").read()
+    except:
+        texto = open(caminho_arquivo, "r", encoding="latin-1").read()
+
+    regex_detectados = detectar_regex(texto)
+
+    # classificação IA
+    ia_classe = ia_classificar_texto(texto)
+
+    risco = definir_risco(regex_detectados, ia_classe)
+
+    return texto, regex_detectados, ia_classe, risco
+
+# ========================================
+# 7. GERAÇÃO DO RELATÓRIO
+# ========================================
+
+def gerar_relatorio(nome_arquivo, texto, regex, ia_classe, risco):
+    relatorio = f"""
+===========================================
+SAFE SCAN KIDS – RELATÓRIO DE ANÁLISE
+Empresa: AbracadabraKids
+===========================================
+
+Arquivo analisado: {nome_arquivo}
+
+CLASSIFICAÇÃO DE RISCO: {risco}
+
+Categoria IA identificada: 
+ - 0 = comum
+ - 1 = dado pessoal
+ - 2 = dado sensível infantil
+
+Resultado da IA: {ia_classe}
+
+-------------------------------------------
+DADOS DETECTADOS:
+-------------------------------------------
+"""
+
+    if not regex:
+        relatorio += "\nNenhum dado sensível encontrado.\n"
+    else:
+        for tipo, valores in regex.items():
+            relatorio += f"\n{tipo}:\n"
+            for item in valores:
+                relatorio += f" - {item}\n"
+
+    relatorio += "\n-------------------------------------------\n"
+    relatorio += "Trecho analisado:\n"
+    relatorio += texto[:1000]
+
+    # criar arquivo
+    saida = f"RELATORIO_SafeScanKids_{nome_arquivo.replace('.', '_')}.txt"
+    with open(saida, "w", encoding="utf-8") as f:
+        f.write(relatorio)
+
+    return saida
+
+# ========================================
+# 8. EXECUÇÃO PRINCIPAL
+# ========================================
+
+if __name__ == "__main__":
+
+    print("=========== SafeScan Kids – AbracadabraKids ===========")
+    caminho = input("Digite o caminho do arquivo para analisar: ")
+
+    texto, regex, ia_classe, risco = analisar_arquivo(caminho)
+
+    nome = os.path.basename(caminho)
+
+    arquivo_relatorio = gerar_relatorio(nome, texto, regex, ia_classe, risco)
+
+    print("\nAnálise concluída!")
+    print(f"Risco identificado: {risco}")
+    print(f"Relatório gerado: {arquivo_relatorio}")
