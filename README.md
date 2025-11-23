@@ -70,7 +70,7 @@ Copiar código
 
 ### 1️⃣ Clone o projeto
 ```bash
-git clone https://github.com/SEU-USUARIO/SafeScanKids.git
+git clone https://github.com/jhonesmedeiros/ProjetoUnifeob-IA/edit/main/README.md
 cd SafeScanKids
 2️⃣ Instale dependências
 bash
