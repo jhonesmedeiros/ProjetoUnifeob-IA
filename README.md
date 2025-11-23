@@ -1,97 +1,166 @@
-SafeScan Kids – AbracadabraKids
-IA + Segurança da Informação para Detecção de Dados Sensíveis Infantis (LGPD)
+# 🧒🎡 SafeScanKids  
+### Sistema Inteligente de Classificação e Verificação de Documentos  
+Projeto desenvolvido para a empresa fictícia **AbrakadabraKids**, integrando Inteligência Artificial e Segurança da Informação.
 
-O SafeScan Kids é uma solução desenvolvida para apoiar a AbracadabraKids, oferecendo detecção automática de dados sensíveis e pessoais presentes em arquivos de texto ou planilhas. O sistema utiliza Expressões Regulares (Regex) combinadas com um modelo de IA (MLPClassifier) para identificar riscos em conformidade com a LGPD, especialmente no tratamento de dados de crianças.
+---
 
-🚀 Funcionalidades Principais
+## 📘 Visão Geral
 
-✔️ Detecção automática de:
+O **SafeScanKids** é uma solução de IA projetada para analisar documentos utilizados no cadastro e operação da AbrakadabraKids.  
+Ele é capaz de:
 
-CPF
+- Classificar automaticamente o tipo de documento (criança, responsável, tutor, fornecedor, brinquedos);
+- Detectar dados sensíveis (CPF, CNPJ, telefone, e-mail);
+- Indicar o nível de risco de acordo com a LGPD;
+- Funcionar tanto por **linha de comando** quanto através de uma **interface web** em Streamlit.
 
-E-mails
+O sistema foi pensado para apoiar a segurança da informação, minimizar riscos e facilitar a organização documental.
 
-Telefones
+---
 
-Endereços
+## 🧠 Funcionalidades Principais
 
-Datas de nascimento
+### ✔️ Classificação Automática  
+Utiliza **Machine Learning (Naive Bayes)** para identificar a categoria mais provável do documento.
 
-Indícios de alergias e dados sensíveis
+### ✔️ Detecção de Dados Sensíveis  
+Reconhece automaticamente:
+- CPF  
+- CNPJ  
+- Telefone  
+- E-mail  
 
-✔️ Classificação automática via IA em três níveis:
+### ✔️ Cálculo de Risco  
+Baseado nas informações encontradas:
 
-0 — Conteúdo comum
+| Dados Encontrados | Risco |
+|------------------|-------|
+| CPF ou CNPJ | 🔴 Alto |
+| E-mail | 🟡 Médio |
+| Nenhum dado sensível | 🟢 Baixo |
 
-1 — Dado pessoal
+### ✔️ Interface Web  
+Uma interface amigável feita em **Streamlit** para facilitar apresentações e demonstrações.
 
-2 — Dado sensível infantil
+---
 
-✔️ Sistema de avaliação de risco:
+## 📂 Estrutura do Projeto
 
-Baixo, Médio ou Alto
+SafeScanKidsProjeto/
+│
+├── safescan_kids.py # Versão CLI (linha de comando)
+├── streamlit_app.py # Interface web
+├── requirements.txt # Dependências
+├── README.md # Documentação
+│
+├── data/ # Arquivos de teste
+│ ├── dados_clientes.txt
+│ └── documento_inofensivo.txt
+│
+└── models/ # Gerado automaticamente
+├── model.pkl
+└── vectorizer.pkl
 
-✔️ Geração automática de relatório com:
+yaml
+Copiar código
 
-Dados encontrados
+---
 
-Trecho analisado
+## 🛠️ Instalação
 
-Classificação da IA
+### 1️⃣ Clone o projeto
+```bash
+git clone https://github.com/SEU-USUARIO/SafeScanKids.git
+cd SafeScanKids
+2️⃣ Instale dependências
+bash
+Copiar código
+pip install -r requirements.txt
+Python 3.10+ recomendado.
+
+▶️ Como Usar
+✔️ Modo 1 — Linha de Comando
+Execute:
+
+bash
+Copiar código
+python safescan_kids.py
+Informe o caminho do arquivo:
+
+kotlin
+Copiar código
+Digite o caminho do arquivo para análise: data\documento_teste.txt
+Exemplo de saída:
+yaml
+Copiar código
+=== RESULTADO DA ANÁLISE ===
+Categoria prevista: cadastro responsável
+Risco: Alto
+
+Padrões encontrados:
+- CPF: ['123.456.789-00']
+- CNPJ: []
+- Telefone: []
+- Email: ['exemplo@teste.com']
+✔️ Modo 2 — Interface Web (Streamlit)
+Execute:
+
+bash
+Copiar código
+streamlit run streamlit_app.py
+Acesse no navegador:
+
+arduino
+Copiar código
+http://localhost:8501
+Você poderá colar textos e ver:
+
+Categoria prevista
 
 Nível de risco
 
-📦 Tecnologias Utilizadas
+Dados sensíveis detectados
 
-Python 3.10+
+📁 Criando Seus Próprios Arquivos
+Coloque os arquivos no diretório:
 
-scikit-learn (MLPClassifier)
+kotlin
+Copiar código
+data/
+Exemplo de conteúdo:
 
-pandas
+makefile
+Copiar código
+Nome: Ana Souza
+CPF: 987.654.321-00
+Email: ana.souza@example.com
+🔒 Segurança da Informação
+O SafeScanKids foi projetado seguindo princípios da LGPD:
 
-re (regex)
+Não envia dados para a internet
 
-🔧 Como Executar o Projeto
-1. Clone o repositório
-git clone https://github.com/seuusuario/safescan-kids.git
-cd safescan-kids
+Funciona totalmente offline
 
-2. Crie um ambiente virtual (opcional, mas recomendado)
-python -m venv venv
-source venv/bin/activate   # Linux/macOS
-venv\Scripts\activate      # Windows
+Não armazena documentos analisados
 
-3. Instale as dependências
-pip install -r requirements.txt
+Mantém apenas o modelo de IA necessário para classificação
 
-4. Execute o analisador
-python safescan_backend.py
+👨‍💻 Tecnologias Utilizadas
+Python 3
+
+Scikit-learn
+
+Streamlit
+
+Expressões Regulares (Regex)
+
+Pickle
+
+VS Code
+
+Git / GitHub
 
 
-O script carregará o modelo de IA, analisará os arquivos definidos e gerará o relatório final em texto.
-
-📁 Estrutura do Projeto
-/safescan-kids
-│
-├── safescan_backend.py     # Núcleo da IA + detecção de dados sensíveis
-├── requirements.txt        # Dependências
-└── README.md               # Documentação
-
-🧠 Como Funciona a IA
-
-O sistema cria um vetor de texto usando CountVectorizer
-
-Treina um modelo MLPClassifier simples
-
-Classifica o conteúdo em:
-
-0 (comum), 1 (pessoal), 2 (sensível)
-
-Combina IA + Regex para definir o nível final de risco
-
-🛡️ Finalidade do Projeto
-
-O SafeScan Kids busca auxiliar pequenas empresas — como a AbracadabraKids — a garantir práticas de segurança e privacidade no trato de informações, oferecendo uma solução acessível, educacional e alinhada à LGPD.
 
 RA: 24000758 NOME: Thauan Thales Paulista
 RA: 24000679 NOME: Gustavo Costa Jorge
